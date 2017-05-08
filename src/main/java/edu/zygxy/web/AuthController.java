@@ -44,4 +44,10 @@ public class AuthController {
         authService.logout(request, response);
         return new JsonResponse(null);
     }
+
+    @RequestMapping(value = "/system")
+    public String system() {
+        return "system";
+    }
+
 }

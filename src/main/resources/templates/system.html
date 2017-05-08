@@ -32,47 +32,17 @@
 
     <l-content>
         <l-router slot="router" href="/index" title="首页" iscurrent="false"></l-router>
-        <l-router slot="router" href="#" title="员工管理" iscurrent="true"></l-router>
-
+        <l-router slot="router" href="/system" title="系统设置" iscurrent="true"></l-router>
         <l-container>
-            <l-quick-action>
-                <l-quick-btn href="/employee/add" title="添加员工" icon="icon icon-plus" color="blue"></l-quick-btn>
-            </l-quick-action>
+            <l-widget-container title="系统设置" icon="icon icon-calendar">
 
-            <l-accordion-container id="tag-list" title="部门列表" icon="icon icon-tag">
                 <l-container>
-                    <l-label href="/employee" title="全部员工"></l-label>
-                    <l-label th:href="@{/employee(departmentId=${department.id})}" th:title="${department.name}" th:each="department:${departments}"></l-label>
+                    <l-notification color="red" title="系统初始化后，会保留一个超级管理员账号，用户名123456@qq.com，密码123456"></l-notification>
+                    <ul class="quick-actions">
+                        <li class="bg_lo"><a onclick="initialization()"><i class="icon icon-refresh"></i>系统初始化</a></li>
+                        <li class="bg_lb"><a onclick="backup()"><i class="icon icon-cloud-upload"></i>系统备份</a></li>
+                    </ul>
                 </l-container>
-            </l-accordion-container>
-
-            <l-widget-container icon="icon icon-th" title="员工列表">
-                <table class="table table-bordered data-table">
-                    <thead>
-                    <tr>
-                        <th><input type="checkbox" id="title-table-checkbox" name="title-table-checkbox" /></th>
-                        <th>工号</th>
-                        <th>姓名</th>
-                        <th>部门</th>
-                        <th>级别</th>
-                        <th>邮箱</th>
-                        <th>手机</th>
-                        <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="user:${users}">
-                        <td><input name="check" type="checkbox"/></td>
-                        <td th:text="${user.id}"></td>
-                        <td th:text="${user.name}"></td>
-                        <td th:text="${user.department}"></td>
-                        <td th:text="${user.role}"></td>
-                        <td th:text="${user.email}"></td>
-                        <td th:text="${user.phone}"></td>
-                        <td class="center" ><a th:href="@{/employee/update(userId=${user.id})}">修改信息</a><a th:onclick="${'deleteUser('+user.id+')'}" style="margin-left: 10px;cursor:pointer">删除员工</a></td>
-                    </tr>
-                    </tbody>
-                </table>
             </l-widget-container>
 
         </l-container>
@@ -88,29 +58,25 @@
 <script src="lib/js/matrix.tables.js"></script>
 <script src="lib/js/vue.js"></script>
 <script src="lib/js/component.js"></script>
-<script>
+<script th:inline="javascript">
     new Vue({
         el: '#l-app'
     })
-    function deleteUser(id) {
-
-        if (confirm("确定要删除员工吗？")) {
+    function initialization() {
+        if (confirm("确定要初始化系统吗？")) {
             $.ajax({
-                type: "DELETE",
+                type: "POST",
                 contentType: "application/json",
-                url: "/api/users/" + id,
+                url: "/api/init" ,
                 success: function (result) {
                     var obj = eval(result);
-                    if (obj.code == 200) {
-                        alert("删除成功!");
-                        location.reload();
-                    }else{
-                        alert(obj.message);
-                    }
                 }
             });
         }
-
+        location.href = "/login";
+    }
+    function backup() {
+        
     }
 </script>
 </body>
